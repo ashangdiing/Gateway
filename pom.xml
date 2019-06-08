@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.1.3.RELEASE</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+	<groupId>com.august.gateway</groupId>
+	<artifactId>gateway</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>gateway</name>
+	<description>Demo project for gateway</description>
+
+	<properties>
+	 <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<java.version>1.8</java.version>
+	</properties>
+
+	<dependencies>
+	
+			<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<optional>true</optional>
+		</dependency>
+		
+							<!-- 			<dependency>
+								    <groupId>org.springframework.cloud</groupId>
+								    <artifactId>spring-cloud-starter</artifactId>
+								    <version>2.1.1.RELEASE</version>
+								</dependency>
+										 -->
+		
+		<!-- spring-boot-starter-web 与gateway有冲突，不能引入，引入后有一条warn告警，提示需要移除spring-boot-starter-web
+		
+		-->
+		<!-- <dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency> -->
+								<dependency>
+						    <groupId>org.springframework.cloud</groupId>
+						    <artifactId>spring-cloud-starter-gateway</artifactId>
+						    <version>2.1.1.RELEASE</version>
+						</dependency>
+						
+												<dependency>
+						    <groupId>org.springframework.boot</groupId>
+						    <artifactId>spring-boot-starter-data-redis-reactive</artifactId>
+						    <version>2.1.5.RELEASE</version>
+						</dependency>
+						
+											<!-- 	<dependency>
+									<groupId>org.springframework.boot</groupId>
+									<artifactId>spring-boot-starter-data-redis</artifactId>
+									<version>2.1.5.RELEASE</version>
+								</dependency> -->
+						
+													<dependency>
+							    <groupId>org.apache.commons</groupId>
+							    <artifactId>commons-pool2</artifactId>
+							    <version>2.6.2</version>
+							</dependency>
+						
+						
+											<!-- 	<dependency>
+						    <groupId>org.springframework.boot</groupId>
+						    <artifactId>spring-boot-starter-webflux</artifactId>
+						    <version>2.1.5.RELEASE</version>
+									</dependency> -->
+												
+						
+	<!-- 	
+	spring-cloud-starter-netflix-eureka-server包含了spring-boot-starter-web避免冲突也需要移除
+
+				<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
+			 <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-web</artifactId>
+                </exclusion>
+            </exclusions>
+			 <version>2.1.1.RELEASE</version>
+		</dependency>
+		
+		
+	  -->
+						  <dependency>
+					    <groupId>org.springframework.cloud</groupId>
+					    <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+					    <version>2.1.1.RELEASE</version>
+					</dependency>
+																<dependency>
+								    <groupId>org.springframework.cloud</groupId>
+								    <artifactId>spring-cloud-starter-netflix-hystrix</artifactId>
+								    <version>2.1.1.RELEASE</version>
+								</dependency>
+																
+											<!-- 					<dependency>
+								    <groupId>org.springframework.cloud</groupId>
+								    <artifactId>spring-cloud-starter-netflix-hystrix-dashboard</artifactId>
+								    <version>2.1.1.RELEASE</version>
+								</dependency> -->
+								
+								
+								
+										 	<dependency>
+					    <groupId>org.springframework.cloud</groupId>
+					    <artifactId>spring-cloud-starter-openfeign</artifactId>
+					    <version>2.1.1.RELEASE</version>
+					</dependency>
+	  
+								  					 
+	  					
+	  
+	  
+				<!-- spring 监控spring状态组件的工具包 查看所有bean的方法 ： http://127.0.0.1:9002/actuator/beans 
+			其他参见资料，比如查看所有rest接口等 -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+		
+			<!--  <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-turbine</artifactId>
+             <version>1.4.7.RELEASE</version>
+        </dependency> -->
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<scope>runtime</scope>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+ 
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			
+			<plugin>
+				<groupId>com.spotify</groupId>
+				<artifactId>docker-maven-plugin</artifactId>
+				<version>1.2.0</version>
+				<configuration>
+					<imageName>${docker.image.prefix}/${project.artifactId}</imageName>
+					<dockerDirectory>/main/resources/docker</dockerDirectory>
+					<resources>
+						<resource>
+							<targetPath>/</targetPath>
+							<directory>${project.build.directory}</directory>
+							<include>${project.build.finalName}.jar</include>
+						</resource>
+					</resources>
+				</configuration>
+			</plugin>
+			
+		</plugins>
+	</build>
+
+</project>

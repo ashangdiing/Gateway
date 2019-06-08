@@ -1,0 +1,17 @@
+FROM java
+MAINTAINER augustwei
+ENV JAVA_OPTS=""
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","data/gateway-0.0.1-SNAPSHOT.jar"]
+ENV TZ=Asia/Shanghai
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+# 执行命令
+# docker build -t gateway .
+
+#使用外部的docker镜像和配置文件
+# docker run --name gateway -it -v /docker/java/gateway/:/data -v /docker/java/gateway/application.properties:/application.properties -v /docker/java/gateway/logs:/logs -p 9005:9005 -p 9006:9006 --restart=always -d gateway 
+
+#建议使用版本
+
+
+
+# docker run --name gateway -it -v /docker/java/gateway/:/data -v /docker/java/gateway/application.properties:/application.properties -v /docker/java/gateway/logs:/logs -p 9005:9005 -p 9006:9006 -d gateway 

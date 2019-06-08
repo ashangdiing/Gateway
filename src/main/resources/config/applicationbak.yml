@@ -1,0 +1,100 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: sharedCar
+          uri: lb://sharedCar
+        # uri: lb://sharedCar
+          order: 40 #路由级别,优先匹配路由规则。数字越小优先匹配。
+          predicates: 
+            - Path=/sharedcar/**
+            - Weight=service1, 100
+          filters:
+          - name: RequestRateLimiter
+            args:
+             # 允许用户每秒处理多少个请求
+             #允许用户每秒执行多少请求，而不会丢弃任何请求。这是令牌桶填充的速率。
+                  redis-rate-limiter.replenishRate: 100
+             # 令牌桶的容量，允许在一秒钟内完成的最大请求数
+             #一秒钟内允许执行的最大请求数。这是令牌桶可以容纳的令牌数。将此值设置为零将阻止所有请求。
+                  redis-rate-limiter.burstCapacity: 100
+       #SPEL表达式去的对应的bean
+                  key-resolver: "#{@userKeyResolver}"
+                  #超过限制返回状态429，请求太多。 HTTP/1.1 429 Too Many Requests
+           # 熔断降级配置
+          - name: Hystrix
+            args:
+               name : default
+               fallbackUri: 'forward:/gateway/request_rate_limiter'  
+             
+          - name: Retry
+            args:
+               retries: 3
+               series:
+                  - SERVER_ERROR
+          - StripPrefix=1
+
+          
+        - id: sharedCar1
+          uri: http://192.168.39.67:9008/shacar/,http://192.168.39.69:9008/shacar/
+        # uri: lb://sharedCar
+          order: 60 #路由级别
+          predicates: 
+            - Path=/sharedcar/**
+            - Weight=service1, 0
+          filters:
+          - name: RequestRateLimiter
+            args:
+             # 允许用户每秒处理多少个请求
+                  redis-rate-limiter.replenishRate: 2
+             # 令牌桶的容量，允许在一秒钟内完成的最大请求数
+                  redis-rate-limiter.burstCapacity: 3
+       #SPEL表达式去的对应的bean
+                  key-resolver: "#{@userKeyResolver}"
+          - StripPrefix=1
+          
+          
+          
+        - id: gateway
+          uri: lb://GATEWAY/
+        # uri: lb://sharedCar
+          order: 60 #路由级别
+          predicates: 
+            - Path=/gateway/**
+          filters:
+          # 熔断降级配置
+            - name: Hystrix
+              args:
+               name : default
+               fallbackUri: 'forward:/gateway/error'  
+             
+            - name: Retry
+              args:
+               retries: 3
+               series:
+                  - SERVER_ERROR
+            - StripPrefix=1
+
+
+        - id: authority
+          uri: lb://authority
+          order: 100 #路由级别
+          predicates:
+          #  - Method=*
+            - Path=/**
+          filters:
+              # 熔断降级配置
+            - name: Hystrix
+              args:
+               name : default
+               fallbackUri: 'forward:/gateway/error'  
+             
+            - name: Retry
+              args:
+               retries: 3
+               series:
+                  - SERVER_ERROR
+
+         
+              
+              
