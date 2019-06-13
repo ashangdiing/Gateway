@@ -7,11 +7,16 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 # 执行命令
 # docker build -t gateway .
 
-#使用外部的docker镜像和配置文件
-# docker run --name gateway -it -v /docker/java/gateway/:/data -v /docker/java/gateway/application.properties:/application.properties -v /docker/java/gateway/logs:/logs -p 9005:9005 -p 9006:9006 --restart=always -d gateway 
+
+# --hostname ：指定hostname;
+# --net : 指定网络模式
+# --ip：指定IP
+# --add-host ：指定往/etc/hosts添加的host。格式 --add-host hadoop2:192.168.10.32
+#使用外部的docker镜像和配置文件。
+# docker run --network=host --name gateway -it -v /docker/java/gateway/:/data -v /docker/java/gateway/application.properties:/application.properties -v /docker/java/gateway/logs:/logs -p 9005:9005 -p 9006:9006 --restart=always -d gateway 
 
 #建议使用版本
 
 
 
-# docker run --name gateway -it -v /docker/java/gateway/:/data -v /docker/java/gateway/application.properties:/application.properties -v /docker/java/gateway/logs:/logs -p 9005:9005 -p 9006:9006 -d gateway 
+# docker run --network=host --name gateway -it -v /docker/java/gateway/:/data -v /docker/java/gateway/application.properties:/application.properties -v /docker/java/gateway/logs:/logs -p 9005:9005 -p 9006:9006 -d gateway 
