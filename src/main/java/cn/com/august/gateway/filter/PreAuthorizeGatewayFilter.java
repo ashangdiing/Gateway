@@ -17,18 +17,19 @@ import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 @Slf4j
 @Component
-public class AuthorizeGatewayFilter implements GlobalFilter,Ordered{
+public class PreAuthorizeGatewayFilter implements GlobalFilter,Ordered{
 	 private static final String AUTHORIZE_TOKEN = "Authorization";
+	 private static final String SERVER_AUTHORIZE_TOKEN = "Server_Authorization";
 	 
 	 
 	/*
-	 * 
-	 * 该类进行权限拦截。设置跳转信息到内存中去。
+	 * 可以在这个类里面进行一些处理，首先删除掉非法信息。比如与后台认证的头信息可能被外界模仿放在头，需要删掉，然后自己加上与后台交互的信息
+	 *  
 	 */
 	@Override
 	public int getOrder() {
 		//数字越低优先级越高
-		return 0;
+		return -10;
 	}
 
 	@Override
@@ -42,7 +43,15 @@ public class AuthorizeGatewayFilter implements GlobalFilter,Ordered{
         if(token != null)
         log.info("网关获取到的token，可以进行权限拦截 。AuthorizeGatewayFilter  token:"+token);
         
-      
+        
+        
+        request.mutate()
+        .header(SERVER_AUTHORIZE_TOKEN, "SERVER_AUTHORIZE_TOKEN---------------->1")
+        .header(SERVER_AUTHORIZE_TOKEN, "SERVER_AUTHORIZE_TOKEN---------------->2")
+        .header(SERVER_AUTHORIZE_TOKEN, "SERVER_AUTHORIZE_TOKEN---------------->3")
+        .build();
+      //将现在的request 变成 change对象 
+        ServerWebExchange build = exchange.mutate().request(request).build();
         
 		/*
 		 *
