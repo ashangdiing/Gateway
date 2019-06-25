@@ -22,7 +22,8 @@ public class Beans {
 	 @Bean KeyResolver userKeyResolver() {
 		 log.debug("------------------------------------------>userKeyResolver  建议取cooike值进行限流，避免攻击");
 		 return exchange ->
-		 Mono.just(exchange.getRequest().getQueryParams().getFirst("userName")); }
+		 Mono.just(exchange.getRequest().getQueryParams().getFirst("userName")); 
+		 }
 	 
 	/**
 	 *  
